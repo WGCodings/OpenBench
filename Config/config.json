@@ -1,5 +1,5 @@
 {
-    "client_version"     : 47,
+    "client_version"     : 45,
     "client_repo_url"    : "https://github.com/AndyGrant/OpenBench",
     "client_repo_ref"    : "master",
 
@@ -24,30 +24,10 @@
         "UHO_4060_v2.epd",
         "UHO_4060_vB.epd",
         "UHO_4060_vT.epd",
-        "UHO_Lichess_4852_v1.epd",
-        "DFRC_4852_v1.epd"
+        "UHO_Lichess_4852_v1.epd"
     ],
 
     "engines" : [
-        "4ku",
-        "Berserk",
-        "Bit-Genie",
-        "BlackMarlin",
-        "Demolito",
-        "Drofa",
-        "Equisetum",
-        "Ethereal",
-        "FabChess",
-        "Halogen",
-        "Igel",
-        "Koivisto",
-        "Laser",
-        "RubiChess",
-        "Seer",
-        "Stash",
-        "Stockfish",
-        "Weiss",
-        "Winter",
-        "Zahak"
+        "Pea"
     ]
 }

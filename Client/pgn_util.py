@@ -141,12 +141,12 @@ def process_pgn_file(file_name, scale_factor, compact):
 
 def compress_pgn_files(file_names, scale_factor, compact):
 
-    compressed_text = []
+    text = ''
     for fname in file_names:
         print ('Compressing %s...' % fname)
-        compressed_text.append(process_pgn_file(fname, scale_factor, compact))
+        text += process_pgn_file(fname, scale_factor, compact)
 
-    return bz2.compress('\n'.join(compressed_text).encode())
+    return bz2.compress(text.encode())
 
 if __name__ == '__main__':
 
