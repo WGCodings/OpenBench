@@ -5,12 +5,41 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      OB_DB_PATH: /app/data/db.sqlite3
       OB_DEBUG: "0"
+      OB_DB_ENGINE: mysql
+      OB_DB_HOST: db
+      OB_DB_NAME: openbench
+      OB_DB_USER: openbench
+      OB_DB_PASSWORD: ${OB_DB_PASSWORD:?set OB_DB_PASSWORD in .env}
     volumes:
       - ./data:/app/data
       - ./Media:/app/Media
-    networks: [edge]
+    depends_on:
+      db:
+        condition: service_healthy
+    # default: to reach `db`. edge: shared with TrailCraft's Caddy.
+    networks: [default, edge]
+
+  db:
+    image: mariadb:11.4
+    container_name: openbench-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: openbench
+      MARIADB_USER: openbench
+      MARIADB_PASSWORD: ${OB_DB_PASSWORD:?set OB_DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${OB_DB_ROOT_PASSWORD:?set OB_DB_ROOT_PASSWORD in .env}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    # No published port: only reachable from the openbench container.
+    networks: [default]
 
 networks:
   edge:

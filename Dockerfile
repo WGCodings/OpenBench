@@ -5,6 +5,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# mysqlclient builds against the MySQL/MariaDB C client library
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential pkg-config default-libmysqlclient-dev \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

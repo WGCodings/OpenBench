@@ -98,12 +98,35 @@ WSGI_APPLICATION = 'OpenSite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('OB_DB_PATH', os.path.join(BASE_DIR, 'db.sqlite3')),
+# SQLite by default (local development). Set OB_DB_ENGINE=mysql to use a
+# MySQL / MariaDB server instead, as recommended for larger instances with
+# many workers -- the Pi's docker-compose.yml does this with a MariaDB
+# container. Credentials come from the environment, never from this file.
+
+if os.environ.get('OB_DB_ENGINE', 'sqlite') == 'mysql':
+    DATABASES = {
+        'default': {
+            'ENGINE'   : 'django.db.backends.mysql',
+            'NAME'     : os.environ.get('OB_DB_NAME', 'openbench'),
+            'USER'     : os.environ.get('OB_DB_USER', 'openbench'),
+            'PASSWORD' : os.environ.get('OB_DB_PASSWORD', ''),
+            'HOST'     : os.environ.get('OB_DB_HOST', 'db'),
+            'PORT'     : os.environ.get('OB_DB_PORT', '3306'),
+            'CONN_MAX_AGE' : 60,
+            'OPTIONS'  : {
+                'charset'      : 'utf8mb4',
+                'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
     }
-}
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.environ.get('OB_DB_PATH', os.path.join(BASE_DIR, 'db.sqlite3')),
+        }
+    }
 
 
 # Password validation

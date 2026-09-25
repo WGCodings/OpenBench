@@ -4,3 +4,4 @@ requests
 scipy
 gunicorn
 whitenoise
+mysqlclient
