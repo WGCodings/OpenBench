@@ -19,10 +19,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECURITY WARNING: don't run with debug turned on in production!
-SECRET_KEY = '@!zw2l8til1(0eb_nk+1w!(n78gqm&u)s)_v7#k6iseia@g9q0'
-DEBUG = True
+SECRET_KEY = os.environ.get('OB_SECRET_KEY', '@!zw2l8til1(0eb_nk+1w!(n78gqm&u)s)_v7#k6iseia@g9q0')
+DEBUG = os.environ.get('OB_DEBUG', '1') == '1'
 
 ALLOWED_HOSTS = ['*']
+
+# Production deployment behind a reverse proxy (Caddy on the Pi).
+# Set OB_PUBLIC_URL, e.g. https://openbench.wgcodings.com, to enable.
+OB_PUBLIC_URL = os.environ.get('OB_PUBLIC_URL')
+if OB_PUBLIC_URL:
+    ALLOWED_HOSTS           = [OB_PUBLIC_URL.split('://', 1)[-1], 'localhost', '127.0.0.1']
+    CSRF_TRUSTED_ORIGINS    = [OB_PUBLIC_URL]
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE   = True
+    CSRF_COOKIE_SECURE      = True
 
 HTML_MINIFY   = True
 APPEND_SLASH  = True
@@ -52,6 +62,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -90,7 +101,7 @@ WSGI_APPLICATION = 'OpenSite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.environ.get('OB_DB_PATH', os.path.join(BASE_DIR, 'db.sqlite3')),
     }
 }
 
@@ -132,3 +143,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

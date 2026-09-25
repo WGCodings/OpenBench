@@ -1,0 +1,17 @@
+services:
+  openbench:
+    build: .
+    container_name: openbench
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      OB_DB_PATH: /app/data/db.sqlite3
+      OB_DEBUG: "0"
+    volumes:
+      - ./data:/app/data
+      - ./Media:/app/Media
+    networks: [edge]
+
+networks:
+  edge:
+    external: true

@@ -20,3 +20,8 @@ Media/Events/*
 
 *.lock
 *.epd
+# Docker deployment (Pi)
+.env
+data/
+staticfiles/
+openbench_watchers.lock

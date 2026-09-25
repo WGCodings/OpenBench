@@ -1,0 +1,11 @@
+.git
+.idea
+.env
+data
+Media
+staticfiles
+db.sqlite3
+venv
+__pycache__
+*.pyc
+openbench_watchers.lock
